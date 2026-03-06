@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 
 module.exports = {
   ownerOnly: true,
@@ -14,11 +14,14 @@ module.exports = {
   async execute(interaction) {
     const OAUTH_URL = `https://discord.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=identify%20guilds.join&prompt=consent`;
 
-    // Fetch the full channel object so .send() works
+    // Fetch channel by ID directly — avoids null cache issues
     const rawChannel = interaction.options.getChannel('channel');
-    const channel = rawChannel
-      ? await interaction.guild.channels.fetch(rawChannel.id)
-      : interaction.channel;
+    const channelId = rawChannel ? rawChannel.id : interaction.channelId;
+    const channel = await interaction.client.channels.fetch(channelId);
+
+    if (!channel) {
+      return interaction.reply({ content: '❌ Could not find that channel.', flags: MessageFlags.Ephemeral });
+    }
 
     const embed = new EmbedBuilder()
       .setTitle('🔐 Authorization Required')
@@ -41,6 +44,6 @@ module.exports = {
     );
 
     await channel.send({ embeds: [embed], components: [row] });
-    await interaction.reply({ content: `✅ Auth embed sent to ${channel}`, ephemeral: true });
+    await interaction.reply({ content: `✅ Auth embed sent!`, flags: MessageFlags.Ephemeral });
   },
 };
