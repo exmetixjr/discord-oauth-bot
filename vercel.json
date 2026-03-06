@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "routes": [
+    { "src": "/api/callback", "dest": "/api/callback.js" },
+    { "src": "/api/users", "dest": "/api/users.js" },
+    { "src": "/(.*)", "dest": "/frontend/public/index.html" }
+  ]
+}

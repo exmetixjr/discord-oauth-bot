@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuthBot Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0d1117; color: #e6edf3; font-family: 'Segoe UI', sans-serif; }
+    .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+    h1 { color: #7289da; font-size: 2rem; margin-bottom: 0.5rem; }
+    .subtitle { color: #8b949e; margin-bottom: 2rem; }
+    .success-banner { background: #1a472a; border: 1px solid #2ea043; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; color: #3fb950; }
+    .error-banner { background: #3d1c1c; border: 1px solid #da3633; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; color: #f85149; }
+    .card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 1.5rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🤖 AuthBot</h1>
+    <p class="subtitle">Discord OAuth2 Authorization System</p>
+    <div id="message"></div>
+    <div class="card">
+      <p>✅ Authorization successful! You may close this window.</p>
+    </div>
+  </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const msg = document.getElementById('message');
+    if (params.get('success')) {
+      const name = decodeURIComponent(params.get('user') || 'User');
+      msg.innerHTML = `<div class="success-banner">✅ ${name} has been successfully authorized!</div>`;
+    } else if (params.get('error')) {
+      msg.innerHTML = `<div class="error-banner">❌ Authorization failed: ${params.get('error')}</div>`;
+    }
+  </script>
+</body>
+</html>
