@@ -1,3 +1,6 @@
 .env
+*.env
+bot.zip
+*.zip
 node_modules/
-.vercel
+.vercel/
