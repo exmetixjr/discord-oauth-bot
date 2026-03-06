@@ -1,7 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
-const OAUTH_URL = `https://discord.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=identify%20guilds.join&prompt=consent`;
-
 module.exports = {
   ownerOnly: true,
   data: new SlashCommandBuilder()
@@ -14,7 +12,13 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    const channel = interaction.options.getChannel('channel') || interaction.channel;
+    const OAUTH_URL = `https://discord.com/oauth2/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=identify%20guilds.join&prompt=consent`;
+
+    // Fetch the full channel object so .send() works
+    const rawChannel = interaction.options.getChannel('channel');
+    const channel = rawChannel
+      ? await interaction.guild.channels.fetch(rawChannel.id)
+      : interaction.channel;
 
     const embed = new EmbedBuilder()
       .setTitle('🔐 Authorization Required')
